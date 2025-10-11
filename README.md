@@ -103,12 +103,6 @@ crud-testing/
 └── README.md
 ```
 
-## Principles Followed
-
-- **SOLID**: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion
-- **KISS**: Keep It Simple, Stupid
-- **DRY**: Don't Repeat Yourself
-
 ## Contributing
 
 1. Fork the repository

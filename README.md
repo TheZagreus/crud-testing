@@ -1,0 +1,134 @@
+# Room Booking System
+
+A modern web application for managing room bookings with time slots. Users can book one of 4 available rooms for specific dates and times, with automatic overlap prevention to ensure no double-bookings on the same day.
+
+## Features
+
+- **4 Rooms Available**: Room 1, Room 2, Room 3, Room 4
+- **Calendar View**: Interactive calendar for date selection
+- **Time-Based Bookings**: Specify start and end times for bookings
+- **Overlap Prevention**: System prevents booking conflicts on the same date
+- **CRUD Operations**: Create, read, update, and delete bookings
+- **Modern UI**: Clean, responsive interface with teal theme
+- **API Backend**: RESTful API built with Laravel
+- **Frontend**: Vanilla JavaScript for dynamic interactions
+
+## Technologies Used
+
+- **Backend**: Laravel (PHP framework)
+- **Database**: SQLite (for simplicity, can be changed to MySQL/PostgreSQL)
+- **Frontend**: HTML, CSS, JavaScript
+- **Styling**: Custom CSS with modern design
+
+## Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/TheZagreus/crud-testing.git
+   cd crud-testing
+   ```
+
+2. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+
+3. Install PHP dependencies:
+   ```bash
+   composer install
+   ```
+
+4. Set up the database:
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
+
+5. Start the development server:
+   ```bash
+   php artisan serve
+   ```
+
+6. Open your browser and go to `http://localhost:8000`
+
+## Usage
+
+1. **View Calendar**: The main page displays an interactive calendar for the current month.
+2. **Select Date**: Click on a date in the calendar to select it.
+3. **Choose Room**: Select a room from the dropdown.
+4. **Set Time**: Enter start and end times for your booking.
+5. **Book**: Click "Book Room" to create the booking.
+6. **Manage Bookings**: View all bookings in the list below. Use "Edit" to modify or "Delete" to remove.
+
+## API Endpoints
+
+- `GET /api/rooms` - Get all rooms
+- `GET /api/bookings` - Get all bookings
+- `POST /api/bookings` - Create a new booking
+- `GET /api/bookings/{id}` - Get a specific booking
+- `PUT /api/bookings/{id}` - Update a booking
+- `DELETE /api/bookings/{id}` - Delete a booking
+
+## Project Structure
+
+```
+crud-testing/
+├── backend/
+│   ├── app/
+│   │   ├── Http/Controllers/
+│   │   │   ├── BookingController.php
+│   │   │   └── RoomController.php
+│   │   └── Models/
+│   │       ├── Booking.php
+│   │       └── Room.php
+│   ├── database/
+│   │   ├── migrations/
+│   │   │   ├── create_rooms_table.php
+│   │   │   └── create_bookings_table.php
+│   │   └── seeders/
+│   │       ├── DatabaseSeeder.php
+│   │       └── RoomSeeder.php
+│   ├── public/
+│   │   ├── index.html
+│   │   ├── styles.css
+│   │   └── app.js
+│   ├── routes/
+│   │   ├── api.php
+│   │   └── web.php
+│   └── composer.json
+├── index.html
+├── app.js
+├── styles.css
+├── package.json
+└── README.md
+```
+
+## Principles Followed
+
+- **SOLID**: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion
+- **KISS**: Keep It Simple, Stupid
+- **DRY**: Don't Repeat Yourself
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## Screenshots
+
+(Add screenshots here if available)
+
+## Future Improvements
+
+- User authentication and authorization
+- Email notifications for bookings
+- Recurring bookings
+- Admin panel for managing rooms
+- Mobile app version

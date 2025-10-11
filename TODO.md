@@ -6,7 +6,7 @@
   - BookingService class (handles CRUD: getAllBookings, getBookingById, createBooking with availability check, updateBooking, deleteBooking; uses local storage).
   - Functions: loadBookingsFromStorage, saveBookingsToStorage, renderBookings, handleFormSubmit, handleEdit, handleDelete.
 - [x] Update index.html to link styles.css and app.js.
-- [ ] Test the application by opening index.html in a browser and performing CRUD operations.
+- [x] Test the application by opening index.html in a browser and performing CRUD operations.
 - [x] Update Booking class to include startTime and endTime.
 - [x] Update BookingService to check for time overlaps on the same date for availability.
 - [x] Update index.html form to include start time and end time inputs.

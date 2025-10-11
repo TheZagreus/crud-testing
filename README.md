@@ -153,14 +153,3 @@ This project is open source and available under the [MIT License](LICENSE).
 
 <img width="1439" height="759" alt="Screenshot 2025-10-11 at 7 32 25 PM" src="https://github.com/user-attachments/assets/e28b0921-d252-4448-b402-91244770ff0c" />
 
-## Future Improvements
-
-- User authentication and authorization
-- Email notifications for bookings
-- Recurring bookings
-- Admin panel for managing rooms
-- Mobile app version
-=======
-<img width="1439" height="759" alt="Screenshot 2025-10-11 at 7 32 25 PM" src="https://github.com/user-attachments/assets/e28b0921-d252-4448-b402-91244770ff0c" />
-
->>>>>>> a7e061de5c2d1ff7986cbbe1ce5d19ba1aaf98ab

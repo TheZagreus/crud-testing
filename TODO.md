@@ -1,0 +1,14 @@
+- [x] Create index.html with HTML structure: form for selecting room and date, submit button, and a div for displaying the list of bookings.
+- [x] Create styles.css with basic CSS styling for the form, list, and overall layout.
+- [x] Create app.js with JavaScript classes and functions:
+  - Room class (simple data holder).
+  - Booking class (data holder with id, roomId, date).
+  - BookingService class (handles CRUD: getAllBookings, getBookingById, createBooking with availability check, updateBooking, deleteBooking; uses local storage).
+  - Functions: loadBookingsFromStorage, saveBookingsToStorage, renderBookings, handleFormSubmit, handleEdit, handleDelete.
+- [x] Update index.html to link styles.css and app.js.
+- [ ] Test the application by opening index.html in a browser and performing CRUD operations.
+- [x] Update Booking class to include startTime and endTime.
+- [x] Update BookingService to check for time overlaps on the same date for availability.
+- [x] Update index.html form to include start time and end time inputs.
+- [x] Update app.js to handle start and end times in form submission and rendering.
+- [x] Test the updated application.

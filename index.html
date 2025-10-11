@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Booking System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo">Techline</div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="user-profile">
+                <img src="https://via.placeholder.com/50" alt="User">
+                <div>
+                    <h3>Anna Smith</h3>
+                    <p>Member</p>
+                </div>
+            </div>
+        </aside>
+        <main>
+            <div class="calendar-section">
+                <h2>Room Booking Calendar</h2>
+                <div id="calendar"></div>
+            </div>
+            <div class="booking-section">
+                <h3>Select Room and Time</h3>
+                <select id="room-select">
+                    <option value="">Choose a room</option>
+                    <option value="1">Room 1</option>
+                    <option value="2">Room 2</option>
+                    <option value="3">Room 3</option>
+                    <option value="4">Room 4</option>
+                </select>
+                <div id="time-slots">
+                    <h4>Available Time Slots</h4>
+                    <ul id="slots-ul"></ul>
+                </div>
+                <button id="book-btn" style="display:none;">Book Selected Slot</button>
+            </div>
+            <div class="bookings-list">
+                <h3>Current Bookings</h3>
+                <ul id="bookings-ul"></ul>
+            </div>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

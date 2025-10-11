@@ -1,206 +1,174 @@
-let selectedDate = null;
-let selectedRoom = null;
-let selectedSlot = null;
+const API_BASE = 'http://127.0.0.1:8000/api';
 
-// Data storage
-let bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
-
-function saveBookings() {
-    localStorage.setItem('bookings', JSON.stringify(bookings));
+async function fetchRooms() {
+    const res = await fetch(`${API_BASE}/rooms`);
+    return await res.json();
 }
 
-// Availability check
-function isAvailable(roomId, date, start, end) {
-    return !bookings.some(b => b.roomId === roomId && b.date === date && !(end <= b.start || start >= b.end));
+async function fetchBookings() {
+    const res = await fetch(`${API_BASE}/bookings`);
+    return await res.json();
 }
 
-// CRUD functions
-function createBooking(roomId, date, start, end) {
-    if (!isAvailable(roomId, date, start, end)) throw new Error('Room not available at this time');
-    const id = Date.now().toString();
-    bookings.push({ id, roomId, date, start, end });
-    saveBookings();
-    return id;
-}
-
-function getBookings() {
-    return bookings;
-}
-
-function updateBooking(id, roomId, date, start, end) {
-    const b = bookings.find(b => b.id === id);
-    if (!b) throw new Error('Booking not found');
-    if (roomId !== b.roomId || date !== b.date || start !== b.start || end !== b.end) {
-        if (!isAvailable(roomId, date, start, end)) throw new Error('Room not available at this time');
+async function createBooking(data) {
+    const res = await fetch(`${API_BASE}/bookings`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || 'Error creating booking');
     }
-    b.roomId = roomId;
-    b.date = date;
-    b.start = start;
-    b.end = end;
-    saveBookings();
+    return await res.json();
 }
 
-function deleteBooking(id) {
-    const i = bookings.findIndex(b => b.id === id);
-    if (i === -1) throw new Error('Booking not found');
-    bookings.splice(i, 1);
-    saveBookings();
+async function updateBooking(id, data) {
+    const res = await fetch(`${API_BASE}/bookings/${id}`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || 'Error updating booking');
+    }
+    return await res.json();
 }
 
-// Rooms
-const rooms = [
-    { id: '1', name: 'Room 1' },
-    { id: '2', name: 'Room 2' },
-    { id: '3', name: 'Room 3' },
-    { id: '4', name: 'Room 4' }
-];
+async function deleteBooking(id) {
+    const res = await fetch(`${API_BASE}/bookings/${id}`, {
+        method: 'DELETE'
+    });
+    if (!res.ok) {
+        throw new Error('Error deleting booking');
+    }
+}
 
-// Calendar rendering
 function generateCalendar(year, month) {
+    const calendar = document.getElementById('calendar');
+    calendar.innerHTML = '';
     const date = new Date(year, month, 1);
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
     const firstDay = date.getDay();
+    const lastDate = new Date(year, month + 1, 0).getDate();
+
     const table = document.createElement('table');
     const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+
     const headerRow = document.createElement('tr');
-    ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    days.forEach(day => {
         const th = document.createElement('th');
         th.textContent = day;
         headerRow.appendChild(th);
     });
     thead.appendChild(headerRow);
-    table.appendChild(thead);
 
-    const tbody = document.createElement('tbody');
     let row = document.createElement('tr');
     for (let i = 0; i < firstDay; i++) {
-        const td = document.createElement('td');
-        row.appendChild(td);
+        row.appendChild(document.createElement('td'));
     }
-    for (let day = 1; day <= daysInMonth; day++) {
+    for (let date = 1; date <= lastDate; date++) {
         if (row.children.length === 7) {
             tbody.appendChild(row);
             row = document.createElement('tr');
         }
         const td = document.createElement('td');
-        td.textContent = day;
-        const fullDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        const hasBooking = bookings.some(b => b.date === fullDate);
-        if (hasBooking) td.classList.add('booked');
-        td.addEventListener('click', () => selectDate(fullDate, td));
+        td.textContent = date;
+        td.addEventListener('click', () => selectDate(`${year}-${String(month + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`, td));
         row.appendChild(td);
     }
+    while (row.children.length < 7) {
+        row.appendChild(document.createElement('td'));
+    }
     tbody.appendChild(row);
+
+    table.appendChild(thead);
     table.appendChild(tbody);
-    return table;
+    calendar.appendChild(table);
 }
 
 function selectDate(date, td) {
-    selectedDate = date;
     document.querySelectorAll('#calendar td').forEach(cell => cell.classList.remove('selected'));
     td.classList.add('selected');
-    renderTimeSlots();
+    document.getElementById('date-input').value = date;
 }
 
-// Time slots rendering
-const timeSlots = [
-    '09:00-10:00', '10:00-11:00', '11:00-12:00', '12:00-13:00',
-    '13:00-14:00', '14:00-15:00', '15:00-16:00', '16:00-17:00'
-];
-
-function renderTimeSlots() {
-    if (!selectedDate || !selectedRoom) {
-        document.getElementById('time-slots').style.display = 'none';
-        document.getElementById('book-btn').style.display = 'none';
-        return;
-    }
-    document.getElementById('time-slots').style.display = 'block';
-    const ul = document.getElementById('slots-ul');
+async function renderBookings() {
+    const bookings = await fetchBookings();
+    const ul = document.getElementById('bookings-ul');
     ul.innerHTML = '';
-    timeSlots.forEach(slot => {
-        const [start, end] = slot.split('-');
+    bookings.forEach(booking => {
         const li = document.createElement('li');
-        li.textContent = slot;
-        const isBooked = bookings.some(b => b.roomId === selectedRoom && b.date === selectedDate && b.start === start && b.end === end);
-        if (isBooked) li.classList.add('booked');
-        else li.addEventListener('click', () => selectSlot(slot, li));
+        li.innerHTML = `
+            <div class="booking-info">
+                ${booking.room.name} - ${booking.date} ${booking.start_time} - ${booking.end_time}
+            </div>
+            <div class="booking-actions">
+                <button class="edit-btn" data-id="${booking.id}">Edit</button>
+                <button class="delete-btn" data-id="${booking.id}">Delete</button>
+            </div>
+        `;
         ul.appendChild(li);
     });
 }
 
-function selectSlot(slot, li) {
-    selectedSlot = slot;
-    document.querySelectorAll('#slots-ul li').forEach(s => s.classList.remove('selected'));
-    li.classList.add('selected');
-    document.getElementById('book-btn').style.display = 'block';
-}
-
-// Booking function
-document.getElementById('book-btn').addEventListener('click', () => {
-    if (!selectedRoom || !selectedDate || !selectedSlot) return;
-    const [start, end] = selectedSlot.split('-');
+document.getElementById('book-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const roomId = document.getElementById('room-select').value;
+    const date = document.getElementById('date-input').value;
+    const start = document.getElementById('start-time').value;
+    const end = document.getElementById('end-time').value;
+    const editId = document.getElementById('edit-id').value;
     try {
-        createBooking(selectedRoom, selectedDate, start, end);
-        renderTimeSlots();
+        if (editId) {
+            await updateBooking(editId, {room_id: roomId, date, start_time: start, end_time: end});
+            document.getElementById('edit-id').value = '';
+            document.querySelector('button[type="submit"]').textContent = 'Book Room';
+        } else {
+            await createBooking({room_id: roomId, date, start_time: start, end_time: end});
+        }
         renderBookings();
-        selectedSlot = null;
-        document.getElementById('book-btn').style.display = 'none';
+        this.reset();
     } catch (error) {
         alert(error.message);
     }
 });
 
-// Room selection
-document.getElementById('room-select').addEventListener('change', (e) => {
-    selectedRoom = e.target.value;
-    renderTimeSlots();
-});
-
-// Render bookings
-function renderBookings() {
-    const ul = document.getElementById('bookings-ul');
-    ul.innerHTML = '';
-    getBookings().forEach(b => {
-        const li = document.createElement('li');
-        const room = rooms.find(r => r.id === b.roomId);
-        const roomName = room ? room.name : 'Unknown Room';
-        li.innerHTML = `
-            <div class="booking-info">${roomName} - ${b.date} ${b.start} to ${b.end}</div>
-            <div class="booking-actions">
-                <button class="edit-btn" data-id="${b.id}">Edit</button>
-                <button class="delete-btn" data-id="${b.id}">Delete</button>
-            </div>
-        `;
-        ul.appendChild(li);
-    });
-    // Re-render calendar to update booked dates
-    const now = new Date();
-    document.getElementById('calendar').innerHTML = '';
-    document.getElementById('calendar').appendChild(generateCalendar(now.getFullYear(), now.getMonth()));
-}
-
-// Edit/Delete handlers
-document.getElementById('bookings-ul').addEventListener('click', function(e) {
+document.getElementById('bookings-ul').addEventListener('click', async function(e) {
     if (e.target.classList.contains('delete-btn')) {
+        const id = e.target.dataset.id;
         try {
-            deleteBooking(e.target.dataset.id);
+            await deleteBooking(id);
             renderBookings();
         } catch (error) {
             alert(error.message);
         }
     } else if (e.target.classList.contains('edit-btn')) {
-        const b = bookings.find(b => b.id === e.target.dataset.id);
-        if (b) {
-            // For simplicity, alert or redirect to form; in full app, populate form
-            alert(`Edit booking: ${b.date} ${b.start}-${b.end} for ${rooms.find(r => r.id === b.roomId)?.name}`);
-            // Implement full edit by populating selectors and calling update
+        const id = e.target.dataset.id;
+        const bookings = await fetchBookings();
+        const booking = bookings.find(b => b.id == id);
+        if (booking) {
+            document.getElementById('room-select').value = booking.room_id;
+            document.getElementById('date-input').value = booking.date;
+            document.getElementById('start-time').value = booking.start_time;
+            document.getElementById('end-time').value = booking.end_time;
+            document.getElementById('edit-id').value = id;
+            document.querySelector('button[type="submit"]').textContent = 'Update Booking';
         }
     }
 });
 
-// Initial render
-window.addEventListener('load', () => {
-    const now = new Date();
-    document.getElementById('calendar').appendChild(generateCalendar(now.getFullYear(), now.getMonth()));
+window.addEventListener('load', async () => {
+    const rooms = await fetchRooms();
+    const roomSelect = document.getElementById('room-select');
+    rooms.forEach(room => {
+        const option = document.createElement('option');
+        option.value = room.id;
+        option.textContent = room.name;
+        roomSelect.appendChild(option);
+    });
     renderBookings();
+    generateCalendar(new Date().getFullYear(), new Date().getMonth());
 });

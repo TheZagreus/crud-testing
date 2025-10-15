@@ -51,6 +51,37 @@ A modern web application for managing room bookings with time slots. Users can b
 
 6. Open your browser and go to `http://localhost:8000`
 
+## Troubleshooting
+
+### 500 Server Error
+
+If you encounter a 500 Internal Server Error when running the application, it is likely due to a missing or invalid application encryption key. Laravel requires this key for encryption and security.
+
+**Solution:**
+
+1. Ensure you have a `.env` file in the `backend` directory. If not, copy the example file:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Generate a new application key:
+   ```bash
+   php artisan key:generate
+   ```
+
+3. Start the server again:
+   ```bash
+   php artisan serve
+   ```
+
+This should resolve the error. If the issue persists, check the Laravel logs in `storage/logs/laravel.log` for more details.
+
+### Other Common Issues
+
+- **Database Connection Error**: Ensure your database is set up correctly in the `.env` file and run `php artisan migrate` if needed.
+- **Composer Dependencies**: Run `composer install` to install all required PHP packages.
+- **Port Already in Use**: If `php artisan serve` fails, try specifying a different port: `php artisan serve --port=8001`.
+
 ## Usage
 
 1. **View Calendar**: The main page displays an interactive calendar for the current month.
@@ -102,38 +133,6 @@ crud-testing/
 ├── package.json
 └── README.md
 ```
-
-## Troubleshooting
-
-### 500 Server Error
-
-If you encounter a 500 Internal Server Error when running the application, it is likely due to a missing or invalid application encryption key. Laravel requires this key for encryption and security.
-
-**Solution:**
-
-1. Ensure you have a `.env` file in the `backend` directory. If not, copy the example file:
-   ```bash
-   cp .env.example .env
-   ```
-
-2. Generate a new application key:
-   ```bash
-   php artisan key:generate
-   ```
-
-3. Start the server again:
-   ```bash
-   php artisan serve
-   ```
-
-This should resolve the error. If the issue persists, check the Laravel logs in `storage/logs/laravel.log` for more details.
-
-### Other Common Issues
-
-- **Database Connection Error**: Ensure your database is set up correctly in the `.env` file and run `php artisan migrate` if needed.
-- **Composer Dependencies**: Run `composer install` to install all required PHP packages.
-- **Port Already in Use**: If `php artisan serve` fails, try specifying a different port: `php artisan serve --port=8001`.
-
 
 ## Contributing
 

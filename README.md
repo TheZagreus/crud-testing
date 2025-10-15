@@ -24,8 +24,8 @@ A modern web application for managing room bookings with time slots. Users can b
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/TheZagreus/crud-testing.git
-   cd crud-testing
+   git clone https://github.com/TheZagreus/room-booking.git
+   cd room-booking
    ```
 
 2. Navigate to the backend directory:
@@ -103,7 +103,7 @@ This should resolve the error. If the issue persists, check the Laravel logs in 
 ## Project Structure
 
 ```
-crud-testing/
+room-booking/
 ├── backend/
 │   ├── app/
 │   │   ├── Http/Controllers/

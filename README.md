@@ -18,7 +18,6 @@ A modern web application for managing room bookings with time slots. Users can b
 - **Backend**: Laravel (PHP framework)
 - **Database**: SQLite (for simplicity, can be changed to MySQL/PostgreSQL)
 - **Frontend**: HTML, CSS, JavaScript
-- **Styling**: Custom CSS with modern design
 
 ## Installation
 
